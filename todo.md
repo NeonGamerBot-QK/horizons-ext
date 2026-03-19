@@ -1,0 +1,10 @@
+- [ ] useful project stats
+- [ ] crowdsourced avg review time (note: will need to get reviewed first)
+- [ ] themes
+- [ ] use api data to ur advantage
+- [ ] once explore is out - an advance on info in that.
+- [ ] homepage stats dash
+- [ ] option to hide disabled buttons which dont work yet.
+- [ ] repo dropdown picker
+- [ ] other ft utils features
+- [ ] meow 
