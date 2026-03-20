@@ -1,3 +1,4 @@
+- [ ] autologin
 - [ ] useful project stats
 - [ ] crowdsourced avg review time (note: will need to get reviewed first)
 - [ ] themes
