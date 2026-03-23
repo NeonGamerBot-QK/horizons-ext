@@ -9,3 +9,4 @@
 - [ ] repo dropdown picker
 - [ ] other ft utils features
 - [ ] meow
+- [ ] project idea generator (+auto creates?) (uses local hcai)

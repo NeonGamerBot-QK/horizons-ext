@@ -11,13 +11,11 @@
       <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
     </a>
   </div>
-  <h1>WXT + Svelte</h1>
-
+  <h1>Popup card,,, what happens here</h1>
   <div class="card">
     <Counter />
   </div>
 
-  <p class="read-the-docs">Click on the WXT and Svelte logos to learn more</p>
 </main>
 
 <style>
