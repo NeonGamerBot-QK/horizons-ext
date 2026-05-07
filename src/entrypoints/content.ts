@@ -1,6 +1,6 @@
 import { watchSelector } from "@/lib/util";
-import { mount } from 'svelte';
-import CommandPalette from '../lib/CommandPalette.svelte';
+import { mount } from "svelte";
+import CommandPalette from "../lib/CommandPalette.svelte";
 
 type Command = { label: string; action: () => void; icon?: string };
 
@@ -16,7 +16,7 @@ const plugins: Plugin[] = [
     name: "Command Palette",
     enabled: true,
     run() {
-      const host = document.createElement('div');
+      const host = document.createElement("div");
       document.body.appendChild(host);
       mount(CommandPalette, { target: host, props: { pluginCommands } });
     },
@@ -30,7 +30,7 @@ const plugins: Plugin[] = [
         icon: "login",
         action: () => {
           const input = document.querySelector<HTMLInputElement>(
-            '[placeholder="orpheus@hackclub.com"]'
+            '[placeholder="orpheus@hackclub.com"]',
           );
           if (input) {
             input.value = "neon@saahild.com";
@@ -44,7 +44,7 @@ const plugins: Plugin[] = [
     async run() {
       watchSelector('[placeholder="orpheus@hackclub.com"]', () => {
         const input = document.querySelector<HTMLInputElement>(
-          '[placeholder="orpheus@hackclub.com"]'
+          '[placeholder="orpheus@hackclub.com"]',
         );
         if (input) {
           input.value = "neon@saahild.com";
@@ -57,7 +57,7 @@ const plugins: Plugin[] = [
   },
 ];
 
-const pluginCommands = plugins.flatMap(p => p.commands ?? []);
+const pluginCommands = plugins.flatMap((p) => p.commands ?? []);
 
 export default defineContentScript({
   matches: ["*://*.horizons.hackclub.com/*"],
