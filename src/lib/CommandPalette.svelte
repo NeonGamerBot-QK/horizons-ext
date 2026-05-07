@@ -1,47 +1,66 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
   type Command = { label: string; action: () => void; icon?: string };
 
   let { pluginCommands = [] }: { pluginCommands: Command[] } = $props();
 
   let open = $state(false);
-  let query = $state('');
+  let query = $state("");
   let selected = $state(0);
 
   const baseCommands: Command[] = [
-    { label: 'Go to projects', action: () => location.assign('/app/projects'), icon: 'projects' },
-    { label: 'Go to shop', action: () => location.assign('/app/shop'), icon: 'shopping_cart' },
-    { label: 'Go to dashboard', action: () => location.assign('/app'), icon: 'home' },
-    { label: 'Copy page URL', action: () => navigator.clipboard.writeText(location.href), icon: 'link' },
+    {
+      label: "Go to projects",
+      action: () => location.assign("/app/projects"),
+      icon: "projects",
+    },
+    {
+      label: "Go to shop",
+      action: () => location.assign("/app/shop"),
+      icon: "shopping_cart",
+    },
+    {
+      label: "Go to dashboard",
+      action: () => location.assign("/app"),
+      icon: "home",
+    },
+    {
+      label: "Copy page URL",
+      action: () => navigator.clipboard.writeText(location.href),
+      icon: "link",
+    },
   ];
 
   const allCommands = $derived([...baseCommands, ...pluginCommands]);
 
   const filteredCommands = $derived(
     query
-      ? allCommands.filter(c => c.label.toLowerCase().includes(query.toLowerCase()))
-      : allCommands
+      ? allCommands.filter((c) =>
+          c.label.toLowerCase().includes(query.toLowerCase()),
+        )
+      : allCommands,
   );
 
   onMount(() => {
     const keyHandler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         open = !open;
-        query = '';
+        query = "";
         selected = 0;
       }
-      if (e.key === 'Escape') open = false;
-      if (e.key === 'ArrowDown') selected = Math.min(selected + 1, filteredCommands.length - 1);
-      if (e.key === 'ArrowUp') selected = Math.max(selected - 1, 0);
-      if (e.key === 'Enter' && open) {
+      if (e.key === "Escape") open = false;
+      if (e.key === "ArrowDown")
+        selected = Math.min(selected + 1, filteredCommands.length - 1);
+      if (e.key === "ArrowUp") selected = Math.max(selected - 1, 0);
+      if (e.key === "Enter" && open) {
         filteredCommands[selected]?.action();
         open = false;
       }
     };
-    window.addEventListener('keydown', keyHandler);
-    return () => window.removeEventListener('keydown', keyHandler);
+    window.addEventListener("keydown", keyHandler);
+    return () => window.removeEventListener("keydown", keyHandler);
   });
 </script>
 
@@ -60,7 +79,10 @@
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <li
             class:active={i === selected}
-            onclick={() => { cmd.action(); open = false; }}
+            onclick={() => {
+              cmd.action();
+              open = false;
+            }}
           >
             {cmd.label}
           </li>
