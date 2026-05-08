@@ -6,12 +6,53 @@ type Command = { label: string; action: () => void; icon?: string };
 
 type Plugin = {
   name: string;
+  internal?: boolean
   enabled?: boolean;
   commands?: Command[];
   run?: () => void | Promise<void>;
 };
 
+const RESERVED_KEYS = new Set([
+  "w", "a", "s", "d",
+  "W", "A", "S", "D",
+  "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
+]);
+
+function reserveKeysForExtension() {
+  const handler = (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement | null;
+    if (
+      target &&
+      (target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable)
+    ) {
+      return;
+    }
+
+    if (!RESERVED_KEYS.has(event.key)) return;
+
+    event.stopImmediatePropagation();
+    event.preventDefault();
+
+    window.dispatchEvent(
+      new CustomEvent("ext:key", {
+        detail: { key: event.key, type: event.type },
+      }),
+    );
+  };
+  window.addEventListener("keydown", handler, { capture: true });
+  window.addEventListener("keyup", handler, { capture: true });
+  window.addEventListener("keypress", handler, { capture: true });
+}
+
 const plugins: Plugin[] = [
+  {
+    name: "Reserve Keys",
+    enabled: true,
+    internal: true,
+    run: reserveKeysForExtension,
+  },
   {
     name: "Command Palette",
     enabled: true,

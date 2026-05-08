@@ -1,6 +1,34 @@
 <script lang="ts">
   import { onMount } from "svelte";
-
+  const ADMIN_ROUTES = [{
+    path: "/hoome",
+    name: "Home"
+  }, {
+    path: "/review",
+    name: "Review"
+  }, {
+    path: "/projects",
+    name: "Projects"
+  }, {
+    path: "/users",
+    name: "Users"
+  }, {
+    path: "/shop",
+    name: "Shop"
+  }, {
+    path: "/giftcodes",
+    name: "Gift codes",
+  }, {
+    path: "/transactions",
+    name: "Transactions"
+  }, {
+    path: "/events",
+    name: "Events"
+  }].map(e=> {
+    e.path = "/admin"+e.path
+    e.name = `[ADMIN] - ${e.name}`
+    return e
+  })
   type Command = { label: string; action: () => void; icon?: string };
 
   let { pluginCommands = [] }: { pluginCommands: Command[] } = $props();
@@ -30,6 +58,11 @@
       action: () => navigator.clipboard.writeText(location.href),
       icon: "link",
     },
+    ...ADMIN_ROUTES.map((r) => ({
+      label: r.name,
+      action: () => location.assign(r.path),
+      icon: r.icon || "admin"
+    }))
   ];
 
   const allCommands = $derived([...baseCommands, ...pluginCommands]);
