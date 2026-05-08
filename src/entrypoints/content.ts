@@ -6,16 +6,25 @@ type Command = { label: string; action: () => void; icon?: string };
 
 type Plugin = {
   name: string;
-  internal?: boolean
+  internal?: boolean;
   enabled?: boolean;
   commands?: Command[];
   run?: () => void | Promise<void>;
 };
 
 const RESERVED_KEYS = new Set([
-  "w", "a", "s", "d",
-  "W", "A", "S", "D",
-  "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
+  "w",
+  "a",
+  "s",
+  "d",
+  "W",
+  "A",
+  "S",
+  "D",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
 ]);
 
 function reserveKeysForExtension() {
