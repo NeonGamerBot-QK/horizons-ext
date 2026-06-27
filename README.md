@@ -1,7 +1,21 @@
-# WXT + Svelte
+# bun-react-tailwind-shadcn-template
 
-This template should help get you started developing with Svelte in WXT.
+To install dependencies:
 
-## Recommended IDE Setup
+```bash
+bun install
+```
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+To start a development server:
+
+```bash
+bun dev
+```
+
+To run for production:
+
+```bash
+bun start
+```
+
+This project was created using `bun init` in bun v1.3.9. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
