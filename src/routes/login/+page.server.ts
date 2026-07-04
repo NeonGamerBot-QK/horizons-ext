@@ -1,7 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
+import { getUserInfo } from '$lib/util/rest';
 import type { Actions, PageServerLoad } from './$types';
-
-const AUTH_CHECK_URL = 'https://horizons.hackclub.com/api/user/auth/me';
 
 interface CookieCandidate {
 	name: string;
@@ -23,25 +22,24 @@ function parseCookieCandidates(raw: string): CookieCandidate[] {
 		.filter((cookie) => cookie.name && cookie.value);
 }
 
-async function isAuthenticated(cookieHeader: string): Promise<boolean> {
-	try {
-		const response = await fetch(AUTH_CHECK_URL, {
-			headers: { Cookie: cookieHeader }
-		});
-		return response.ok;
-	} catch {
-		return false;
-	}
-}
-
 export const load: PageServerLoad = async ({ request }) => {
-	const cookieHeader = request.headers.get('cookie');
-
 	// The stored session cookie can be under any name (whatever the pasted
 	// blob called it), so re-check auth by forwarding whatever the browser
 	// sent rather than looking for a fixed cookie name.
-	if (cookieHeader && (await isAuthenticated(cookieHeader))) {
-		redirect(303, '/');
+	const cookieHeader = request.headers.get('cookie');
+	if (cookieHeader) {
+		// redirect() throws internally, so it must stay outside the try/catch
+		// or the catch below would swallow it as a failed auth check.
+		let authenticated = false;
+		try {
+			await getUserInfo(cookieHeader);
+			authenticated = true;
+		} catch {
+			// Not authenticated, stay on the login page.
+		}
+		if (authenticated) {
+			redirect(303, '/app');
+		}
 	}
 };
 
@@ -54,22 +52,33 @@ export const actions: Actions = {
 			return fail(400, { error: 'Paste a cookie value first.' });
 		}
 
-		// Cookies copied from devtools are the whole jar, not just the session
-		// token, so test each candidate individually to find the one
-		// horizons.hackclub.com actually accepts.
+		// Cookies copied from devtools are the whole jar, and horizons may need
+		// more than just the session token (e.g. a CSRF cookie alongside it),
+		// so test them together as a set rather than one at a time.
 		const candidates = parseCookieCandidates(rawCookie);
 
-		for (const candidate of candidates) {
-			if (await isAuthenticated(`${candidate.name}=${candidate.value}`)) {
-				cookies.set(candidate.name, candidate.value, {
-					path: '/',
-					httpOnly: false,
-					sameSite: 'lax'
-				});
-				redirect(303, '/');
-			}
+		if (!candidates.length) {
+			return fail(400, { error: 'Paste a cookie value first.' });
 		}
 
-		return fail(400, { error: 'None of the pasted cookies authenticated successfully.' });
+		const combinedCookieHeader = candidates
+			.map((candidate) => `${candidate.name}=${candidate.value}`)
+			.join('; ');
+
+		try {
+			await getUserInfo(combinedCookieHeader);
+		} catch {
+			return fail(400, { error: 'The pasted cookies did not authenticate successfully.' });
+		}
+
+		for (const candidate of candidates) {
+			cookies.set(candidate.name, candidate.value, {
+				path: '/',
+				httpOnly: false,
+				sameSite: 'lax'
+			});
+		}
+
+		redirect(303, '/app');
 	}
 };

@@ -1,14 +1,5 @@
-<script lang="ts">
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		// if login cookie exists then redir to /app
-		if (window.document.cookie.includes('cookie')) {
-			window.location.href = '/app';
-		}
-	});
-</script>
-
+<!-- Normally unreachable: the server load in +page.server.ts always
+     redirects to /app. Kept as a fallback for odd navigation states. -->
 <center>
 	<main>
 		<br />

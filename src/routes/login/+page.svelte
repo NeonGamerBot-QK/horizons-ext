@@ -19,6 +19,10 @@ Yo gimmie ur cookie
 >
 	<input type="text" name="cookie" placeholder="a cookie" />
 	<button type="submit" disabled={submitting}>{submitting ? 'Testing…' : 'Submit'}</button>
+	<p>
+		to lowk grab it go to <a href="https://horizons.hackclub.com/app?noanimate">horizons</a> and inspect
+		and grab the curl > copy the -b section, tada
+	</p>
 </form>
 
 {#if form?.error}
